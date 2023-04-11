@@ -1,52 +1,127 @@
-# Ex-01_DS_Data_Cleansing
-# AIM
-To read the given data and perform data cleaning and save the cleaned data to a file.
+# Ex02-Outlier
 
-# Explanation
-Data cleaning is the process of preparing data for analysis by removing or modifying data that is incorrect ,incompleted , irrelevant , duplicated or improperly formatted. Data cleaning is not simply about erasing data ,but rather finding a way to maximize datasets accuracy without necessarily deleting the information.
+You are given bhp.csv which contains property prices in the city of banglore, India. You need to examine price_per_sqft column and do following,
 
-# ALGORITHM
-## STEP 1
-Read the given Data
+(1) Remove outliers using IQR 
 
-## STEP 2
-Get the information about the data
+(2) After removing outliers in step 1, you get a new dataframe.
 
-## STEP 3
-Remove the null values from the data
+(3) use zscore of 3 to remove outliers. This is quite similar to IQR and you will get exact same result
 
-## STEP 4
-Save the Clean data to the file
+(4) for the data set height_weight.csv find the following
+
+    (i) Using IQR detect weight outliers and print them
+
+    (ii) Using IQR, detect height outliers and print them
 
 # CODE
 
-import pandas as pd
+DATA
+
 import numpy as np
+
+import pandas as pd
+
+from scipy import stats
+
 import seaborn as sns
-df = pd.read_csv("Loan_data.csv")
+
+df = pd.read_csv("bhp.csv")
+
 print(df)
-df.info()
-df.isnull().sum()
-df['Gender']=df['Gender'].fillna(df['Gender'].mode()[0])
-df['Dependents']=df['Dependents'].fillna(df['Dependents'].mode()[0])
-df['Self_Employed']=df['Self_Employed'].fillna(df['Self_Employed'].mode()[0])
-df['LoanAmount']=df['LoanAmount'].fillna(df['LoanAmount'].median())
-df['Loan_Amount_Term']=df['Loan_Amount_Term'].fillna(df['Loan_Amount_Term'].median())
-df['Credit_History']=df['Credit_History'].fillna(df['Credit_History'].median())
-df.isnull().sum()
+
+
+1.Remove outliers using IQR
+
+
+median = df['price_per_sqft'].quantile(0.5)
+
+Q1 = df['price_per_sqft'].quantile(0.25)
+
+Q3 = df['price_per_sqft'].quantile(0.75)
+
+IQR = Q3-Q1
+
+df1=df[((df['price_per_sqft']>=Q1-1.5*IQR)&(df['price_per_sqft']<=Q3+1.5*IQR))]
+
+print(df1)
+
+
+3.Use zscore of 3 to remove outliers. This is quite similar to IQR and you will get
+exact same result
+
+
+from scipy import stats
+
+z=np.abs(stats.zscore(df1['price_per_sqft']))
+
+df1=df1[(z<3)]
+
+print(df1)
+
+
+(4) for the data set height_weight.csv
+
+
+DATA
+
+
+import numpy as np
+
+import pandas as pd
+
+from scipy import stats
+
+import seaborn as sns
+
+df = pd.read_csv("height_weight.csv")
+
+print(df)
+
+
+(i) Using IQR detect weight outliers and print them
+
+
+median=df['weight'].quantile(0.5)
+
+Q1 = df['weight'].quantile(0.25)
+
+Q3 = df['weight'].quantile(0.75)
+
+IQR = Q3-Q1
+
+df1=df[((df['weight']>=Q1-1.5*IQR)&(df['weight']<=Q3+1.5*IQR))]
+
+print(df1)
+
+
+(ii) Using IQR, detect height outliers and print them
+median=df['height'].quantile(0.5)
+
+
+Q1 = df['height'].quantile(0.25)
+
+Q3 = df['height'].quantile(0.75)
+
+IQR = Q3-Q1
+
+low=Q1-1.5*IQR
+
+high=Q3+1.5*IQR
+
+df1=df[((df['height']>=low)&(df['height']<=high))]
+
+print(df1)
 
 # OUTPUT
 
-![image](https://user-images.githubusercontent.com/95520655/226825010-2760053f-4ce1-4368-bf5a-59ff21f6e125.png)
-![image](https://user-images.githubusercontent.com/95520655/226825166-8259f247-e76f-416b-969e-045837977d4a.png)
-![image](https://user-images.githubusercontent.com/95520655/226825262-457a28d0-8236-4aa4-8670-d85f31a07628.png)
-![image](https://user-images.githubusercontent.com/95520655/226825473-6b627ff3-912a-43c4-bcf3-3438c97cb802.png)
-![image](https://user-images.githubusercontent.com/95520655/226825537-f19fad1a-d677-4842-b866-5c32338106f2.png)
-![image](https://user-images.githubusercontent.com/95520655/226825623-9dc4677a-3554-4d63-80b3-7057864bf97c.png)
-
+![image](https://user-images.githubusercontent.com/95520655/226828186-0b2ad8a7-a444-46c1-8020-5ed47bf1095c.png)
+![image](https://user-images.githubusercontent.com/95520655/226828246-d48b8832-07d8-44aa-a878-80db0bad7e0b.png)
+![image](https://user-images.githubusercontent.com/95520655/226828292-ecb9ed41-2723-407e-bb54-08072116cb1e.png)
+![image](https://user-images.githubusercontent.com/95520655/226828342-66413c92-554e-41e4-b46c-b729d70992d7.png)
+![image](https://user-images.githubusercontent.com/95520655/226828387-7db7306f-7fcd-42b3-8ee6-bd8d0a268d90.png)
+![image](https://user-images.githubusercontent.com/95520655/226828423-026c9ee8-7e14-416f-8c8d-910fa792842a.png)
 
 # RESULT
-Thus the given dataset is read ,cleansing and the cleaned data is saved into the
-file
 
-
+Thus the required output is displayed
